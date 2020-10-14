@@ -1,8 +1,10 @@
 package ui;
 
+import model.InputData;
+
 public interface UserInterface {
     // gets an input from the user based on the given page
-    public Object getInput();
+    public InputData getInput();
 
     // displays the menu to select what the user wants to do
     public void drawMenu();
@@ -18,4 +20,9 @@ public interface UserInterface {
 
     // displays the page where users draw symbols and the model guesses what they are
     public void guess();
+
+    public void guess(String guess);
+
+    // displays generic invalid input message
+    public void invalidInput();
 }
