@@ -75,6 +75,7 @@ public class ConsoleInterface implements UserInterface {
         guess();
     }
 
+    // displays generic invalid input message
     @Override
     public void invalidInput() {
         System.out.println("invalid input");

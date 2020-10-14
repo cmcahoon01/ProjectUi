@@ -9,6 +9,7 @@ public class InputData {
     public String name;
     public Drawing drawing;
 
+    // combines three possible user input types into one object
     public InputData(int type, Object o) {
         this.type = type;
         if (type == NAVIGATION) {

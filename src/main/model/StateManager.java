@@ -24,7 +24,7 @@ public class StateManager {
     }
 
     // EFFECTS: displays the menu, then moves to the next state
-    public void menu() {
+    private static void menu() {
         currentState = MENU;
         ui.drawMenu();
         InputData in = ui.getInput();
@@ -42,7 +42,7 @@ public class StateManager {
     }
 
     // EFFECTS: displays the create a new symbol page, then moves to the next state
-    private void createNew() {
+    private static void createNew() {
         currentState = CREATE_NEW;
         ui.drawCreateNew();
         InputData in = ui.getInput();
@@ -64,7 +64,7 @@ public class StateManager {
 
     // EFFECTS: displays the add drawings to an existing symbol page, then moves to the next state
     // MODIFIES: model
-    private void addToExisting() {
+    private static void addToExisting() {
         currentState = ADD_TO_EXISTING;
         ui.drawAddToExisting();
         InputData in = ui.getInput();
@@ -89,7 +89,7 @@ public class StateManager {
 
     // EFFECTS: displays the teach the model page, then moves to the next state
     // MODIFIES: model
-    private void teach(String name) {
+    private static void teach(String name) {
         currentState = TEACH;
         ui.teach();
         InputData in = ui.getInput();
@@ -110,7 +110,7 @@ public class StateManager {
     }
 
     // EFFECTS: displays the model guessing page, then moves to the next state
-    private void guess() {
+    private static void guess() {
         currentState = GUESS;
         ui.guess();
         InputData in = ui.getInput();
@@ -133,4 +133,6 @@ public class StateManager {
     public static int getCurrentState() {
         return currentState;
     }
+
+
 }
