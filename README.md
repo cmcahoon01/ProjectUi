@@ -19,3 +19,6 @@ My milestones for each phase are as follows:
  &nbsp;&nbsp; Users must be able to add many new drawings to an existing symbol. <br>
  &nbsp;&nbsp; Users must be able to ask the program to begin guessing symbols. <br>
  &nbsp;&nbsp; Users must be able to draw as many symbols as they like for the program to guess. <br>
+ &nbsp;&nbsp; Users must be able to save the estimator and symbols for later use. <br>
+ &nbsp;&nbsp; Users must be able to load previous estimators symbols. <br>
+ 
