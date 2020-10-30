@@ -4,6 +4,8 @@ import model.ml.Estimator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EstimatorTests {
@@ -36,16 +38,5 @@ class EstimatorTests {
         Estimator.addSymbol("bob");
         Estimator.addSymbol("jack");
         assertTrue(Estimator.contains(Estimator.guess(new Drawing("test"))));
-    }
-
-    @Test
-    void testSave() {
-        Estimator.save("saveTest");
-    }
-
-    @Test
-    void testLoad() {
-        System.out.println(Estimator.load("saveTest"));
-        System.out.println(Estimator.getCnn().getTempModel());
     }
 }

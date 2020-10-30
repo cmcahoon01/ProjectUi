@@ -19,7 +19,7 @@ public class Estimator {
     private static ArrayList<LearnedSymbol> learnedSymbols = new ArrayList<>();
     private static ConvolutionalNeuralNetwork cnn = new ConvolutionalNeuralNetwork();
 
-    private static final String SAVE_FOLDER = "saved/";
+    private static final String SAVE_FOLDER = "./data/saved/";
 
     // Effects: checks if any of the known symbols have this name
     public static boolean contains(String name) {

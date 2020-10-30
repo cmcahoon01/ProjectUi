@@ -27,7 +27,7 @@ public class EstimatorMemoryTests {
 
     @Test
     void testCreateNewFile() {
-        File file = new File("saved/tempFile.json");
+        File file = new File("./data/saved/tempFile.json");
         if (file.exists()) {
             file.delete();
         }
@@ -43,13 +43,13 @@ public class EstimatorMemoryTests {
         ConvolutionalNeuralNetwork cnn = Estimator.getCnn();
         Estimator.load("tempFile");
         ConvolutionalNeuralNetwork new_cnn = Estimator.getCnn();
-        File file = new File("saved/tempFile.json");
+        File file = new File("./data/saved/tempFile.json");
         file.delete();
     }
 
     @Test
     void testImproperLoad() {
-        File file = new File("saved/tempFile.json");
+        File file = new File("./data/saved/tempFile.json");
         if (file.exists()) {
             fail("This file should not exist");
         }
@@ -79,7 +79,7 @@ public class EstimatorMemoryTests {
         Estimator.load("testing");
         ArrayList<LearnedSymbol> a = Estimator.getLearnedSymbols();
         assertEquals(2, a.size());
-        File file = new File("saved/testing.json");
+        File file = new File("./data/saved/testing.json");
         file.delete();
     }
 }
