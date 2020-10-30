@@ -2,13 +2,10 @@ package model.ml;
 
 import model.Drawing;
 import model.LearnedSymbol;
-import model.Writable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.naming.NameNotFoundException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -75,7 +72,7 @@ public class Estimator {
             return false;
         }
 
-        JSONObject json = toJsonStatic();
+        JSONObject json = createJson();
         writer.print(json.toString(4));
         writer.close();
         return true;
@@ -123,7 +120,7 @@ public class Estimator {
         return cnn;
     }
 
-    public static JSONObject toJsonStatic() {
+    public static JSONObject createJson() {
         JSONObject json = new JSONObject();
         json.put("cnn", cnn.getTempModel());
         JSONArray array = new JSONArray();

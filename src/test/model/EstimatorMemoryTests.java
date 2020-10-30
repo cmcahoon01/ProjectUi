@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EstimatorMemoryTests {
@@ -77,5 +79,7 @@ public class EstimatorMemoryTests {
         Estimator.load("testing");
         ArrayList<LearnedSymbol> a = Estimator.getLearnedSymbols();
         assertEquals(2, a.size());
+        File file = new File("saved/testing.json");
+        file.delete();
     }
 }
