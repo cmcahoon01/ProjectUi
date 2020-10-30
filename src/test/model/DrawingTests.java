@@ -26,8 +26,8 @@ public class DrawingTests {
 
     @Test
     void testGetters() {
-        assertEquals(5, realDrawing.getHeight());
-        assertEquals(10, realDrawing.getWidth());
+        assertEquals(5, realDrawing.getWidth());
+        assertEquals(10, realDrawing.getHeight());
         assertEquals("faker", fakeDrawing.getName());
         assertTrue(realDrawing.isReal());
         assertFalse(fakeDrawing.isReal());

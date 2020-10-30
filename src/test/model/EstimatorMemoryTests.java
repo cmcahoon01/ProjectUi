@@ -53,4 +53,29 @@ public class EstimatorMemoryTests {
         }
         assertFalse(Estimator.load("tempFile"));
     }
+
+    void createAndSaveComplex() {
+        Estimator.addSymbol("symbol_1");
+        Estimator.addSymbol("symbol_2");
+        Estimator.addDrawing("symbol_1", new Drawing("drawn"));
+        ArrayList<ArrayList<Double>> a = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            a.add(new ArrayList<>());
+            a.get(i).add(i + 0.1);
+            a.get(i).add(i + 0.2);
+            a.get(i).add(i + 0.3);
+        }
+        Estimator.addDrawing("symbol_2", new Drawing(a));
+        Estimator.addDrawing("symbol_2", new Drawing(a));
+        Estimator.save("testing");
+    }
+
+    @Test
+    void testComplexLoad() {
+        Estimator.wipe();
+        createAndSaveComplex();
+        Estimator.load("testing");
+        ArrayList<LearnedSymbol> a = Estimator.getLearnedSymbols();
+        assertEquals(2, a.size());
+    }
 }
