@@ -2,7 +2,6 @@ package ui;
 
 import model.Drawing;
 import model.InputData;
-import model.StateManager;
 
 import java.util.Scanner;
 
@@ -29,7 +28,8 @@ public class ConsoleInterface implements UserInterface {
                 || StateManager.getCurrentState() == StateManager.CREATE_NEW) {
             return new InputData(InputData.NAME, command);
         } else {
-            return new InputData(InputData.DRAWING, new Drawing());
+            // TODO: look at why this exists
+            return new InputData(InputData.DRAWING, new Drawing(command));
         }
     }
 
@@ -79,5 +79,15 @@ public class ConsoleInterface implements UserInterface {
     @Override
     public void invalidInput() {
         System.out.println("invalid input");
+    }
+
+    @Override
+    public void save() {
+
+    }
+
+    @Override
+    public void load() {
+
     }
 }

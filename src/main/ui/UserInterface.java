@@ -25,4 +25,10 @@ public interface UserInterface {
 
     // displays generic invalid input message
     public void invalidInput();
+
+    // prompts the user where they want to save to
+    public void save();
+
+    // prompts the user where they want to load from
+    public void load();
 }

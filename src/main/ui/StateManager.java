@@ -1,7 +1,7 @@
-package model;
+package ui;
 
-import ui.ConsoleInterface;
-import ui.UserInterface;
+import model.ml.Estimator;
+import model.InputData;
 
 public class StateManager {
     public static final int MENU = 1;
@@ -9,6 +9,8 @@ public class StateManager {
     public static final int ADD_TO_EXISTING = 3;
     public static final int TEACH = 4;
     public static final int GUESS = 5;
+    public static final int SAVE = 6;
+    public static final int LOAD = 7;
 
     private static UserInterface ui;
     private static int currentState;
@@ -31,13 +33,25 @@ public class StateManager {
         if (in.type != InputData.NAVIGATION) {
             ui.invalidInput();
         }
-        int selected = in.navigation;
-        if (selected == CREATE_NEW) {
-            createNew();
-        } else if (selected == ADD_TO_EXISTING) {
-            addToExisting();
-        } else if (selected == GUESS) {
-            guess();
+
+        switch (in.navigation) {
+            case CREATE_NEW:
+                createNew();
+                break;
+            case ADD_TO_EXISTING:
+                addToExisting();
+                break;
+            case GUESS:
+                guess();
+                break;
+            case SAVE:
+                //  TODO
+                break;
+            case LOAD:
+                //  TODO
+                break;
+            default:
+                //  TODO
         }
     }
 
@@ -59,7 +73,6 @@ public class StateManager {
         } else if (in.type == InputData.DRAWING) {
             ui.invalidInput();
         }
-
     }
 
     // EFFECTS: displays the add drawings to an existing symbol page, then moves to the next state
@@ -121,6 +134,40 @@ public class StateManager {
         } else if (in.type == InputData.NAVIGATION) {
             int selected = in.navigation;
             if (selected == MENU) {
+                menu();
+            } else {
+                ui.invalidInput();
+            }
+        } else {
+            ui.invalidInput();
+        }
+    }
+
+    // EFFECTS: Asks the user where to save, and saves the model there
+    // MODIFIES: file structure
+    private static void save() {
+        currentState = SAVE;
+        ui.save();
+        InputData in = ui.getInput();
+        if (in.type == InputData.NAME) {
+            if (Estimator.save(in.name)) {
+                menu();
+            } else {
+                ui.invalidInput();
+            }
+        } else {
+            ui.invalidInput();
+        }
+    }
+
+    // EFFECTS: Asks the user where to load from, and uses that estimator
+    // MODIFIES: Estimator
+    private static void load() {
+        currentState = LOAD;
+        ui.load();
+        InputData in = ui.getInput();
+        if (in.type == InputData.NAME) {
+            if (Estimator.load(in.name)) {
                 menu();
             } else {
                 ui.invalidInput();
