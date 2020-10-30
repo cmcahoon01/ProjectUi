@@ -6,12 +6,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ConvolutionalNeuralNetwork implements Writable {
+public class ConvolutionalNeuralNetwork {
     private final ArrayList<Integer> tempModel;
 
-    public ConvolutionalNeuralNetwork(JSONObject jsonObject) {
+    public ConvolutionalNeuralNetwork(JSONArray jsonArray) {
         tempModel = new ArrayList<>();
-        for (Object json : jsonObject.getJSONArray("tmpModel")) {
+        for (Object json : jsonArray) {
             tempModel.add((Integer) json);
         }
     }
@@ -21,13 +21,6 @@ public class ConvolutionalNeuralNetwork implements Writable {
         tempModel.add(1);
         tempModel.add(2);
         tempModel.add(3);
-    }
-
-    @Override
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("tmpModel", tempModel);
-        return json;
     }
 
     public ArrayList<Integer> getTempModel() {

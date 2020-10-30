@@ -2,6 +2,8 @@ package model.ml;
 
 import model.Drawing;
 import model.LearnedSymbol;
+import model.Writable;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.naming.NameNotFoundException;
@@ -73,8 +75,8 @@ public class Estimator {
             return false;
         }
 
-        JSONObject json = cnn.toJson();
-        writer.print(json.toString());
+        JSONObject json = toJsonStatic();
+        writer.print(json.toString(4));
         writer.close();
         return true;
     }
@@ -87,7 +89,12 @@ public class Estimator {
         try {
             String jsonData = readFile(location);
             JSONObject jsonObject = new JSONObject(jsonData);
-            cnn = new ConvolutionalNeuralNetwork(jsonObject);
+            cnn = new ConvolutionalNeuralNetwork(jsonObject.getJSONArray("cnn"));
+            learnedSymbols.clear();
+            for (Object json : jsonObject.getJSONArray("symbols")) {
+                JSONObject nextSymbol = (JSONObject) json;
+                learnedSymbols.add(new LearnedSymbol(nextSymbol));
+            }
         } catch (IOException e) {
             return false;
         }
@@ -116,4 +123,18 @@ public class Estimator {
         return cnn;
     }
 
+    public static JSONObject toJsonStatic() {
+        JSONObject json = new JSONObject();
+        json.put("cnn", cnn.getTempModel());
+        JSONArray array = new JSONArray();
+        for (LearnedSymbol ls : learnedSymbols) {
+            array.put(ls.toJson());
+        }
+        json.put("symbols", array);
+        return json;
+    }
+
+    public static ArrayList<LearnedSymbol> getLearnedSymbols() {
+        return learnedSymbols;
+    }
 }

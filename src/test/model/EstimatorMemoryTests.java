@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ public class EstimatorMemoryTests {
     @Test
     void testCreateNewFile() {
         File file = new File("saved/tempFile.json");
-        if(file.exists()){
+        if (file.exists()) {
             file.delete();
         }
         assertFalse(file.exists());
@@ -35,7 +36,7 @@ public class EstimatorMemoryTests {
     }
 
     @Test
-    void testProperSaveLoadData(){
+    void testProperSaveLoadData() {
         assertTrue(Estimator.save("tempFile"));
         ConvolutionalNeuralNetwork cnn = Estimator.getCnn();
         Estimator.load("tempFile");
@@ -45,9 +46,9 @@ public class EstimatorMemoryTests {
     }
 
     @Test
-    void testImproperLoad(){
+    void testImproperLoad() {
         File file = new File("saved/tempFile.json");
-        if(file.exists()){
+        if (file.exists()) {
             fail("This file should not exist");
         }
         assertFalse(Estimator.load("tempFile"));
