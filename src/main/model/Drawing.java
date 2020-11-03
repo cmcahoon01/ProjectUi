@@ -6,8 +6,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Drawing implements Writable {
-    private int width;
     private int height;
+    private int width;
     private final ArrayList<ArrayList<Double>> pixels;
     private final String name;
 
@@ -96,5 +96,79 @@ public class Drawing implements Writable {
             json.put("name", name);
         }
         return json;
+    }
+
+    public Drawing applyFilter(ArrayList<ArrayList<Double>> filter) {
+        ArrayList<ArrayList<Double>> buffered = createBuffered(filter.size(), filter.get(0).size());
+        ArrayList<ArrayList<Double>> filtered = new ArrayList<>();
+//        filter = normalizeFilter(filter);
+        for (int i = 0; i < height; i++) {
+            filtered.add(new ArrayList<>());
+            for (int j = 0; j < width; j++) {
+                double v = filterLocation(filter, buffered, i, j);
+                filtered.get(i).add(v);
+            }
+        }
+        filtered = removeBuffer(filter.size(), filter.get(0).size(), filtered);
+        return new Drawing(filtered);
+    }
+
+    private ArrayList<ArrayList<Double>> createBuffered(int rows, int columns) {
+        ArrayList<ArrayList<Double>> buffered = new ArrayList<>();
+        rows -= 1;
+        columns -= 1;
+        for (int i = 0; i < height + rows; i++) {
+            buffered.add(new ArrayList<>());
+            for (int j = 0; j < width + columns; j++) {
+                if (i < height && j < width) {
+                    buffered.get(i).add(pixels.get(i).get(j));
+                } else {
+                    buffered.get(i).add(0.);
+                }
+            }
+        }
+        return buffered;
+    }
+
+    private ArrayList<ArrayList<Double>> normalizeFilter(ArrayList<ArrayList<Double>> filter) {
+        double sum = 0.;
+        for (ArrayList<Double> row : filter) {
+            for (Double val : row) {
+                sum += val;
+            }
+        }
+        ArrayList<ArrayList<Double>> normalized = new ArrayList<>();
+        for (int i = 0; i < filter.size(); i++) {
+            normalized.add(new ArrayList<>());
+            for (int j = 0; j < filter.get(0).size(); j++) {
+                double newVal = filter.get(j).get(i) / 2;
+                normalized.get(i).add(newVal);
+            }
+        }
+        return normalized;
+    }
+
+    private double filterLocation(ArrayList<ArrayList<Double>> filter,
+                                  ArrayList<ArrayList<Double>> buffered, int x, int y) {
+        double out = 0;
+        for (int i = 0; i < filter.size(); i++) {
+            for (int j = 0; j < filter.get(i).size(); j++) {
+                out += buffered.get(x + i).get(y + j) * filter.get(i).get(j);
+            }
+        }
+        return out;
+    }
+
+    private ArrayList<ArrayList<Double>> removeBuffer(int rows, int columns,
+                                                      ArrayList<ArrayList<Double>> tooBig) {
+        ArrayList<ArrayList<Double>> reduced = new ArrayList<>();
+        for (int i = 0; i < height; i++) {
+            reduced.add(new ArrayList<>());
+            for (int j = 0; j < width; j++) {
+                double v = tooBig.get(i).get(j);
+                reduced.get(i).add(v);
+            }
+        }
+        return reduced;
     }
 }
