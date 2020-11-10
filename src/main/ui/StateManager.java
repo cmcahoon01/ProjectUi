@@ -2,6 +2,8 @@ package ui;
 
 import model.ml.Estimator;
 import model.InputData;
+import ui.interaction.GraphicInterface;
+import ui.interaction.UserInterface;
 
 public class StateManager {
     public static final int MENU = 1;
@@ -17,7 +19,7 @@ public class StateManager {
 
     // creates a new state manager
     public StateManager() {
-        this(new ConsoleInterface());
+        this(new GraphicInterface());
     }
 
     public StateManager(UserInterface ui) {
@@ -45,13 +47,11 @@ public class StateManager {
                 guess();
                 break;
             case SAVE:
-                //  TODO
+                save();
                 break;
             case LOAD:
-                //  TODO
+                load();
                 break;
-            default:
-                //  TODO
         }
     }
 

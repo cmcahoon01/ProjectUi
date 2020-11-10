@@ -22,7 +22,7 @@ public class EstimatorMemoryTests {
 
     @Test
     void testWriterInvalidFile() {
-        assertFalse(Estimator.save("badFile\\name"));
+        assertFalse(Estimator.save("badFile\\0 name"));
     }
 
     @Test

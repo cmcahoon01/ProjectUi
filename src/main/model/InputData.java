@@ -10,6 +10,7 @@ public class InputData {
     public Drawing drawing;
 
     // combines three possible user input types into one object
+    // Requires Object o is of the given type
     public InputData(int type, Object o) {
         this.type = type;
         if (type == NAVIGATION) {
