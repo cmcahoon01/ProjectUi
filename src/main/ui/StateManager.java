@@ -130,13 +130,18 @@ public class StateManager {
         if (in.type == InputData.DRAWING) {
             String guess = Estimator.guess(in.drawing);
             ui.guess(guess);
-            guess();
+            in = ui.getInput();
+            if (in.type == InputData.NAVIGATION) {
+                if (in.navigation == GUESS) {
+                    guess();
+                } else if (in.navigation == MENU) {
+                    menu();
+                }
+            }
         } else if (in.type == InputData.NAVIGATION) {
             int selected = in.navigation;
             if (selected == MENU) {
                 menu();
-            } else {
-                ui.invalidInput();
             }
         } else {
             ui.invalidInput();
@@ -155,6 +160,8 @@ public class StateManager {
             } else {
                 ui.invalidInput();
             }
+        } else if (in.type == InputData.NAVIGATION && in.navigation == MENU) {
+            menu();
         } else {
             ui.invalidInput();
         }
@@ -172,7 +179,9 @@ public class StateManager {
             } else {
                 ui.invalidInput();
             }
-        } else {
+        } else if (in.type == InputData.NAVIGATION && in.navigation == MENU) {
+            menu();
+        }  else {
             ui.invalidInput();
         }
     }
