@@ -53,7 +53,7 @@ public class Estimator {
         if (learnedSymbols.isEmpty()) {
             return "I have not yet been trained";
         } else {
-            return learnedSymbols.get((int) (Math.random() * learnedSymbols.size())).getName(); //TODO Make not random
+            return learnedSymbols.get((int) (Math.random() * learnedSymbols.size())).getName();
         }
 
     }

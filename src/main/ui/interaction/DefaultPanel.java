@@ -1,6 +1,8 @@
 package ui.interaction;
 
+import model.Drawing;
 import model.InputData;
+import ui.StateManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,21 +46,49 @@ public class DefaultPanel extends JPanel {
 
 
     protected void createButton(String name, InputData input, int x, int y, int width) {
-
-        JButton b = new JButton(name);
+        JButton b = createButton(name, x, y, width);
         b.addActionListener(e -> {
             userInput = input;
             synchronized (sleeper) {
                 sleeper.notify();
             }
         });
+    }
+
+    protected void createButton(String name, DrawingArea input, int x, int y, int width) {
+        JButton b = createButton(name, x, y, width);
+        b.addActionListener(e -> {
+            Drawing d = new Drawing(input.getState());
+            userInput = new InputData(InputData.DRAWING, d);
+            synchronized (sleeper) {
+                sleeper.notify();
+            }
+        });
+    }
+
+    protected void createButton(String name, JTextField input, int x, int y, int width) {
+        JButton b = createButton(name, x, y, width);
+        b.addActionListener(e -> {
+            if (input.getText().length() > 0) {
+                userInput = new InputData(InputData.NAME, input.getText());
+                synchronized (sleeper) {
+                    sleeper.notify();
+                }
+            }
+        });
+    }
+
+    protected JButton createButton(String name, int x, int y, int width) {
+        JButton b = new JButton(name);
         this.add(b);
         x -= width / 2;
         x = Math.max(0, x);
         x = Math.min(windowWidth - width, x);
         b.setBounds(x, y, width, componentHeight);
         b.setBorder(null);
+        return b;
     }
+
 
     protected void createTextField(int y) {
         createTextField(windowWidth / 2, y);
@@ -69,7 +99,7 @@ public class DefaultPanel extends JPanel {
         int textWidth = 100;
         x = Math.max(0, x - textWidth / 2);
         textField.setBounds(x, y, textWidth, componentHeight);
-        createButton("enter", new InputData(InputData.NAME, textField.getText()), x + textWidth + 20, y, 40);
+        createButton("enter", textField, x + textWidth + 20, y, 40);
         this.add(textField);
         parent.setVisible(false);
         parent.setVisible(true);
@@ -96,7 +126,7 @@ public class DefaultPanel extends JPanel {
     }
 
     protected void createDrawingArea() {
-        JPanel drawingArea = new DrawingArea();
+        DrawingArea drawingArea = new DrawingArea();
         int width = getWidth();
         int height = getHeight() - componentHeight * 2;
         int x = 0;
@@ -106,6 +136,9 @@ public class DefaultPanel extends JPanel {
         }
         drawingArea.setBounds(x, componentHeight * 2, width, height);
         this.add(drawingArea);
+        InputData in = new InputData(InputData.NAVIGATION, StateManager.ADD_TO_EXISTING);
+        createButton("Clear", in, this.getWidth() / 2 + 320, this.componentHeight * 2 / 3, 50);
+        createButton("Submit", drawingArea, this.getWidth() / 2 + 380, this.componentHeight * 2 / 3, 50);
     }
 
 

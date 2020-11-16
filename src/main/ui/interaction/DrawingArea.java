@@ -36,16 +36,17 @@ public class DrawingArea extends JPanel {
         Dimension d = this.getSize();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, d.width, d.height);
-        int cellWidth = d.width / columns;
-        int cellHeight = d.height / rows;
-        int size = Math.min(cellHeight, cellWidth);
+        double cellWidth = (double) d.width / columns;
+        double cellHeight = (double) d.height / rows;
+        double size = Math.min(cellHeight, cellWidth);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 int val = (int) (255 - state.get(i).get(j) * 255);
                 val = (Math.max(0, Math.min(210, val)));
                 g.setColor(new Color(val, val, val));
-                g.fillRect(j * size + buffer / 2, i * size + buffer / 2,
-                        size - buffer, size - buffer);
+                int x = (int) (j * size + buffer / 2);
+                int y = (int) (i * size + buffer / 2);
+                g.fillRect(x, y, (int) size - buffer, (int) size - buffer);
             }
         }
     }

@@ -24,6 +24,7 @@ public class StateManager {
 
     public StateManager(UserInterface ui) {
         StateManager.ui = ui;
+        Estimator.addSymbol("bob");
         menu();
     }
 
@@ -33,7 +34,7 @@ public class StateManager {
         ui.drawMenu();
         InputData in = ui.getInput();
         if (in.type != InputData.NAVIGATION) {
-            ui.invalidInput();
+            invalidInput();
         }
 
         switch (in.navigation) {
@@ -65,13 +66,13 @@ public class StateManager {
             if (selected == MENU) {
                 menu();
             } else {
-                ui.invalidInput();
+                invalidInput();
             }
         } else if (in.type == InputData.NAME) {
             Estimator.addSymbol(in.name);
             teach(in.name);
         } else if (in.type == InputData.DRAWING) {
-            ui.invalidInput();
+            invalidInput();
         }
     }
 
@@ -86,17 +87,17 @@ public class StateManager {
             if (selected == MENU) {
                 menu();
             } else {
-                ui.invalidInput();
+                invalidInput();
             }
         } else if (in.type == InputData.NAME) {
             if (Estimator.contains(in.name)) {
                 teach(in.name);
             } else {
-                ui.invalidInput();
+                invalidInput();
                 addToExisting();
             }
         } else if (in.type == InputData.DRAWING) {
-            ui.invalidInput();
+            invalidInput();
         }
     }
 
@@ -114,10 +115,10 @@ public class StateManager {
             if (selected == MENU) {
                 menu();
             } else {
-                ui.invalidInput();
+                invalidInput();
             }
         } else {
-            ui.invalidInput();
+            invalidInput();
         }
 
     }
@@ -129,6 +130,7 @@ public class StateManager {
         InputData in = ui.getInput();
         if (in.type == InputData.DRAWING) {
             String guess = Estimator.guess(in.drawing);
+            System.out.println("good");
             ui.guess(guess);
             in = ui.getInput();
             if (in.type == InputData.NAVIGATION) {
@@ -144,7 +146,7 @@ public class StateManager {
                 menu();
             }
         } else {
-            ui.invalidInput();
+            invalidInput();
         }
     }
 
@@ -155,15 +157,16 @@ public class StateManager {
         ui.save();
         InputData in = ui.getInput();
         if (in.type == InputData.NAME) {
+            System.out.println(in.name);
             if (Estimator.save(in.name)) {
                 menu();
             } else {
-                ui.invalidInput();
+                invalidInput();
             }
         } else if (in.type == InputData.NAVIGATION && in.navigation == MENU) {
             menu();
         } else {
-            ui.invalidInput();
+            invalidInput();
         }
     }
 
@@ -177,12 +180,12 @@ public class StateManager {
             if (Estimator.load(in.name)) {
                 menu();
             } else {
-                ui.invalidInput();
+                invalidInput();
             }
         } else if (in.type == InputData.NAVIGATION && in.navigation == MENU) {
             menu();
-        }  else {
-            ui.invalidInput();
+        } else {
+            invalidInput();
         }
     }
 
@@ -190,5 +193,37 @@ public class StateManager {
         return currentState;
     }
 
+    private static void invalidInput() {
+        ui.invalidInput();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        navigate();
+    }
+
+    private static void navigate() {
+        switch (currentState) {
+            case MENU:
+                menu();
+                break;
+            case CREATE_NEW:
+                createNew();
+                break;
+            case ADD_TO_EXISTING:
+                addToExisting();
+                break;
+            case GUESS:
+                guess();
+                break;
+            case SAVE:
+                save();
+                break;
+            case LOAD:
+                load();
+                break;
+        }
+    }
 
 }

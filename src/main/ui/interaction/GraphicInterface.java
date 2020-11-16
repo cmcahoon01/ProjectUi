@@ -1,6 +1,7 @@
 package ui.interaction;
 
 import model.InputData;
+import model.ml.Estimator;
 import ui.StateManager;
 
 import javax.swing.*;
@@ -34,14 +35,17 @@ public class GraphicInterface extends JFrame implements UserInterface {
         panel.createTitle("Menu");
         panel.createButton("Create a new Symbol", new InputData(InputData.NAVIGATION,
                 StateManager.CREATE_NEW), panel.componentHeight * 2);
-        panel.createButton("Add drawings to an existing Symbol",
-                new InputData(InputData.NAVIGATION, StateManager.ADD_TO_EXISTING), panel.componentHeight * 3);
-        panel.createButton("Guess my drawing",
-                new InputData(InputData.NAVIGATION, StateManager.GUESS), panel.componentHeight * 4);
-        panel.createButton("Save",
-                new InputData(InputData.NAVIGATION, StateManager.SAVE), panel.componentHeight * 5);
         panel.createButton("Load",
-                new InputData(InputData.NAVIGATION, StateManager.LOAD), panel.componentHeight * 6);
+                new InputData(InputData.NAVIGATION, StateManager.LOAD), panel.componentHeight * 3);
+        if (!Estimator.getLearnedSymbols().isEmpty()) {
+            panel.createButton("Save",
+                    new InputData(InputData.NAVIGATION, StateManager.SAVE), panel.componentHeight * 4);
+            panel.createButton("Add drawings to an existing Symbol",
+                    new InputData(InputData.NAVIGATION, StateManager.ADD_TO_EXISTING), panel.componentHeight * 5);
+            panel.createButton("Guess my drawing",
+                    new InputData(InputData.NAVIGATION, StateManager.GUESS), panel.componentHeight * 6);
+
+        }
     }
 
     @Override
@@ -68,22 +72,27 @@ public class GraphicInterface extends JFrame implements UserInterface {
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
         panel.createTitle("Draw");
-//        panel.createDrawingArea();
-        draw();
-    }
-
-    @Override
-    public void guess() {
-        wipe();
-        panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
-                StateManager.MENU), 0, 0);
-        panel.createTitle("Draw");
         panel.createDrawingArea();
         draw();
     }
 
     @Override
+    public void guess() {
+        guess("");
+    }
+
+    @Override
     public void guess(String guess) {
+        wipe();
+        panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
+                StateManager.MENU), 0, 0);
+        if (guess.equals("")) {
+            panel.createTitle("Draw");
+        } else {
+            panel.createTitle("I guess that is a \"" + guess + "\"");
+        }
+        panel.createDrawingArea();
+        draw();
     }
 
     @Override
@@ -107,7 +116,7 @@ public class GraphicInterface extends JFrame implements UserInterface {
     @Override
     public void invalidInput() {
         wipe();
-        panel.createTitle("Invalid Input. Restart app");
+        panel.createTitle("Invalid Input.");
     }
 
     private void wipe() {
