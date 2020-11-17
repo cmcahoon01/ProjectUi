@@ -1,8 +1,9 @@
-package ui.interaction;
+package ui;
 
 import model.Drawing;
 import model.InputData;
 import ui.StateManager;
+import ui.UserInterface;
 
 import java.util.Scanner;
 

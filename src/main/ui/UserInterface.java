@@ -1,4 +1,4 @@
-package ui.interaction;
+package ui;
 
 import model.InputData;
 

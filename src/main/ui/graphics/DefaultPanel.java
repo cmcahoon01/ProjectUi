@@ -1,12 +1,11 @@
-package ui.interaction;
+package ui.graphics;
 
 import model.Drawing;
 import model.InputData;
-import ui.StateManager;
-
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.io.*;
 
 public class DefaultPanel extends JPanel {
     GraphicInterface parent;
@@ -18,6 +17,7 @@ public class DefaultPanel extends JPanel {
     public final int componentHeight = 25;
     public final int componentWidth = 250;
 
+    // Creates a new JPanel
     public DefaultPanel(GraphicInterface parent) {
         this.parent = parent;
         sleeper = new Object();
@@ -26,6 +26,7 @@ public class DefaultPanel extends JPanel {
         setLayout(null);
     }
 
+    // Uptades the window Size
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -44,7 +45,7 @@ public class DefaultPanel extends JPanel {
         createButton(name, input, x, y, componentWidth);
     }
 
-
+    // Creates a button and adds it to the panel
     protected void createButton(String name, InputData input, int x, int y, int width) {
         JButton b = createButton(name, x, y, width);
         b.addActionListener(e -> {
@@ -55,6 +56,7 @@ public class DefaultPanel extends JPanel {
         });
     }
 
+    // Creates a button and adds it to the panel
     protected void createButton(String name, DrawingArea input, int x, int y, int width) {
         JButton b = createButton(name, x, y, width);
         b.addActionListener(e -> {
@@ -66,6 +68,7 @@ public class DefaultPanel extends JPanel {
         });
     }
 
+    // Creates a button and adds it to the panel
     protected void createButton(String name, JTextField input, int x, int y, int width) {
         JButton b = createButton(name, x, y, width);
         b.addActionListener(e -> {
@@ -78,6 +81,7 @@ public class DefaultPanel extends JPanel {
         });
     }
 
+    // Creates a button and adds it to the panel
     protected JButton createButton(String name, int x, int y, int width) {
         JButton b = new JButton(name);
         this.add(b);
@@ -89,11 +93,12 @@ public class DefaultPanel extends JPanel {
         return b;
     }
 
-
+    // Creates a text panel and adds it to the panel
     protected void createTextField(int y) {
         createTextField(windowWidth / 2, y);
     }
 
+    // Creates a text panel and adds it to the panel
     protected void createTextField(int x, int y) {
         JTextField textField = new JTextField();
         int textWidth = 100;
@@ -105,6 +110,7 @@ public class DefaultPanel extends JPanel {
         parent.setVisible(true);
     }
 
+    // Adds a title to the panel
     protected void createTitle(String name) {
         Font bigFont = new Font("serif", Font.BOLD, 30);
         JLabel title = new JLabel(name, SwingConstants.CENTER);
@@ -114,10 +120,12 @@ public class DefaultPanel extends JPanel {
         this.add(title);
     }
 
+    // Adds text to the panel
     protected void createLabel(String name, int y) {
         createLabel(name, windowWidth / 2, y);
     }
 
+    // Adds text to the panel
     protected void createLabel(String name, int x, int y) {
         JLabel text = new JLabel(name, SwingConstants.CENTER);
         int width = windowWidth;
@@ -125,7 +133,8 @@ public class DefaultPanel extends JPanel {
         this.add(text);
     }
 
-    protected void createDrawingArea() {
+    // Creates a new Drawing Area for the panel
+    protected void createDrawingArea(int page) {
         DrawingArea drawingArea = new DrawingArea();
         int width = getWidth();
         int height = getHeight() - componentHeight * 2;
@@ -136,12 +145,12 @@ public class DefaultPanel extends JPanel {
         }
         drawingArea.setBounds(x, componentHeight * 2, width, height);
         this.add(drawingArea);
-        InputData in = new InputData(InputData.NAVIGATION, StateManager.ADD_TO_EXISTING);
+        InputData in = new InputData(InputData.NAVIGATION, page);
         createButton("Clear", in, this.getWidth() / 2 + 320, this.componentHeight * 2 / 3, 50);
         createButton("Submit", drawingArea, this.getWidth() / 2 + 380, this.componentHeight * 2 / 3, 50);
     }
 
-
+    // Listens for button presses
     public InputData getInput() {
         try {
             synchronized (sleeper) {
@@ -150,8 +159,42 @@ public class DefaultPanel extends JPanel {
         } catch (InterruptedException e) {
             // pass
         }
+        Runnable runnable = this::playNote;
+        Thread t = new Thread(runnable);
+        t.start();
         return userInput;
     }
 
+    // plays a click sound
+    private void playNote() {
+        try {
+            File f = new File("src/main/ui/graphics/sounds/mouseClick.wav");
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            double gain = 0.25;
+            float d = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
+            gainControl.setValue(d);
+            clip.start();
+        } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+    }
 
+    // Shows the list of all existing drawings
+    public void showDrawings() {
+        showDrawings(0);
+    }
+
+    // Shows the list of all existing drawings
+    public void showDrawings(int x) {
+        double percentDown = 0;
+        ListArea listArea = new ListArea();
+        int width = getWidth() / 3;
+        int height = (int) (getHeight() * (1 - percentDown));
+        listArea.setBounds(x, (int) (getHeight() * percentDown), width, height);
+        this.add(listArea);
+        listArea.draw();
+    }
 }

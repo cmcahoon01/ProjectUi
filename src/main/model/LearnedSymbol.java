@@ -27,6 +27,10 @@ public class LearnedSymbol implements Writable {
         return name;
     }
 
+    public int getSize() {
+        return drawings.size();
+    }
+
     public void add(Drawing drawing) {
         drawings.add(drawing);
     }

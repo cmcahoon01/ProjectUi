@@ -2,8 +2,7 @@ package ui;
 
 import model.ml.Estimator;
 import model.InputData;
-import ui.interaction.GraphicInterface;
-import ui.interaction.UserInterface;
+import ui.graphics.GraphicInterface;
 
 public class StateManager {
     public static final int MENU = 1;
@@ -24,7 +23,6 @@ public class StateManager {
 
     public StateManager(UserInterface ui) {
         StateManager.ui = ui;
-        Estimator.addSymbol("bob");
         menu();
     }
 
@@ -114,13 +112,14 @@ public class StateManager {
             int selected = in.navigation;
             if (selected == MENU) {
                 menu();
+            } else if (selected == TEACH) {
+                teach(name);
             } else {
                 invalidInput();
             }
         } else {
             invalidInput();
         }
-
     }
 
     // EFFECTS: displays the model guessing page, then moves to the next state
@@ -130,21 +129,35 @@ public class StateManager {
         InputData in = ui.getInput();
         if (in.type == InputData.DRAWING) {
             String guess = Estimator.guess(in.drawing);
-            System.out.println("good");
-            ui.guess(guess);
-            in = ui.getInput();
-            if (in.type == InputData.NAVIGATION) {
-                if (in.navigation == GUESS) {
-                    guess();
-                } else if (in.navigation == MENU) {
-                    menu();
-                }
-            }
+            guess(guess);
+
         } else if (in.type == InputData.NAVIGATION) {
             int selected = in.navigation;
             if (selected == MENU) {
                 menu();
+            } else if (selected == GUESS) {
+                guess();
             }
+        } else {
+            invalidInput();
+        }
+    }
+
+    // EFFECTS: displays the model guessing page, then moves to the next state
+    private static void guess(String guess) {
+        ui.guess(guess);
+        InputData in = ui.getInput();
+        if (in.type == InputData.NAVIGATION) {
+            if (in.navigation == GUESS) {
+                guess();
+            } else if (in.navigation == MENU) {
+                menu();
+            } else {
+                invalidInput();
+            }
+        } else if (in.type == InputData.DRAWING) {
+            String newGuess = Estimator.guess(in.drawing);
+            guess(newGuess);
         } else {
             invalidInput();
         }
@@ -193,6 +206,7 @@ public class StateManager {
         return currentState;
     }
 
+    //Displays an invalid input, then returns
     private static void invalidInput() {
         ui.invalidInput();
         try {
@@ -203,6 +217,8 @@ public class StateManager {
         navigate();
     }
 
+    // Effects: runs the active state
+    // Requires: TEACH is not the currentState
     private static void navigate() {
         switch (currentState) {
             case MENU:

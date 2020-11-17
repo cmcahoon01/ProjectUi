@@ -1,6 +1,4 @@
-package ui.interaction;
-
-import ui.personal.GuiTest;
+package ui.graphics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +16,7 @@ public class DrawingArea extends JPanel {
     private String lastPressed;
     private boolean erasing;
 
+    // Creates a new DrawingArea and fills the state with zeros
     public DrawingArea() {
         super();
         state = new ArrayList<>();
@@ -31,6 +30,7 @@ public class DrawingArea extends JPanel {
         lastPressed = "none";
     }
 
+    // draws a grid of pixels representing the drawing
     @Override
     protected void paintComponent(Graphics g) {
         Dimension d = this.getSize();
@@ -51,35 +51,41 @@ public class DrawingArea extends JPanel {
         }
     }
 
+    // listens for mouse activity
     private void startListener() {
         DrawingMouseListener dml = new DrawingMouseListener();
         addMouseListener(dml);
         addMouseMotionListener(dml);
     }
 
-
+    // updates the state based on mouse actions
     private void click(MouseEvent e, boolean pressed) {
         Point point = e.getPoint();
-        int[] cellIndices = getCell(point);
-        if (!lastPressed.equals(cellIndices[0] + " " + cellIndices[1])) {
-            lastPressed = cellIndices[0] + " " + cellIndices[1];
-            if (pressed) {
-                erasing = state.get(cellIndices[1]).get(cellIndices[0]) == 1;
+        ArrayList<int[]> cells = getCell(point);
+        for (int[] cellIndices : cells) {
+            if (!lastPressed.equals(cellIndices[0] + " " + cellIndices[1])) {
+                lastPressed = cellIndices[0] + " " + cellIndices[1];
+                if (pressed) {
+                    erasing = state.get(cellIndices[1]).get(cellIndices[0]) == 1;
+                }
+                if (!erasing) {
+                    state.get(cellIndices[1]).set(cellIndices[0], 1.);
+                } else {
+                    state.get(cellIndices[1]).set(cellIndices[0], 0.);
+                }
             }
-            if (!erasing) {
-                state.get(cellIndices[1]).set(cellIndices[0], 1.);
-            } else {
-                state.get(cellIndices[1]).set(cellIndices[0], 0.);
-            }
-            revalidate();
-            repaint();
         }
+        revalidate();
+        repaint();
     }
 
-    private int[] getCell(Point p) {
+    // finds the pixel(s) at the given mouse point
+    private ArrayList<int[]> getCell(Point p) {
         int x = Math.min(p.x * columns / getWidth(), columns - 1);
         int y = Math.min(p.y * rows / getHeight(), rows - 1);
-        return new int[]{x, y};
+        ArrayList<int[]> out = new ArrayList<>();
+        out.add(new int[]{x, y});
+        return out;
     }
 
     public ArrayList<ArrayList<Double>> getState() {
