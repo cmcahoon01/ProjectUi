@@ -36,14 +36,14 @@ public class ListArea extends JPanel {
         separator1.setBounds(getWidth() / 2, (int) (titleSize * 1.5), 5, height);
         add(separator1);
         JSeparator separator2 = new JSeparator(JSeparator.HORIZONTAL);
-        separator2.setBounds((int) (getWidth() * 0.2), (int) (titleSize * 2.5), (int) (getWidth() * 0.6), 5);
+        separator2.setBounds(10, (int) (titleSize * 2.5), getWidth() - 20, 5);
         add(separator2);
     }
 
     // Titles the list
     private void createTitle() {
         Font bigFont = new Font("serif", Font.BOLD, titleSize - 5);
-        JLabel title = new JLabel("Existing Drawings", SwingConstants.CENTER);
+        JLabel title = new JLabel("Existing Objects", SwingConstants.CENTER);
         title.setFont(bigFont);
         title.setBounds(0, 0, getWidth(), titleSize);
         this.add(title);
@@ -54,7 +54,7 @@ public class ListArea extends JPanel {
     private void createHeaders() {
         Font font = new Font("serif", Font.BOLD, listSize - 5);
 
-        JLabel name = new JLabel("Drawing Name", SwingConstants.RIGHT);
+        JLabel name = new JLabel("Object Name", SwingConstants.RIGHT);
         name.setFont(font);
         name.setBounds(0, (int) (1.5 * titleSize), getWidth() / 2 - 10, listSize);
         this.add(name);

@@ -7,8 +7,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class DrawingArea extends JPanel {
-    private static final int rows = 20;
-    private static final int columns = 20;
+    private static final int rows = 10;
+    private static final int columns = 10;
 
     private final int buffer = 20 / Math.min(rows, columns);
     private final ArrayList<ArrayList<Double>> state;

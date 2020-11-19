@@ -16,7 +16,7 @@ public interface UserInterface {
     public void drawAddToExisting();
 
     // displays the page where users add new drawings to an existing symbol
-    public void teach();
+    public void teach(String name);
 
     // displays the page where users draw symbols and the model guesses what they are
     public void guess();

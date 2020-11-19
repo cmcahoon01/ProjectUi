@@ -2,10 +2,12 @@ package ui.graphics;
 
 import model.Drawing;
 import model.InputData;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class DefaultPanel extends JPanel {
     GraphicInterface parent;
@@ -14,7 +16,9 @@ public class DefaultPanel extends JPanel {
     private InputData userInput;
     private final Object sleeper;
 
-    public final int componentHeight = 25;
+    public final int componentHeight = 30;
+    public final int buttonGap = 5;
+
     public final int componentWidth = 250;
 
     // Creates a new JPanel
@@ -88,7 +92,7 @@ public class DefaultPanel extends JPanel {
         x -= width / 2;
         x = Math.max(0, x);
         x = Math.min(windowWidth - width, x);
-        b.setBounds(x, y, width, componentHeight);
+        b.setBounds(x, y, width, componentHeight - buttonGap);
         b.setBorder(null);
         return b;
     }
@@ -110,25 +114,30 @@ public class DefaultPanel extends JPanel {
         parent.setVisible(true);
     }
 
-    // Adds a title to the panel
+
     protected void createTitle(String name) {
-        Font bigFont = new Font("serif", Font.BOLD, 30);
-        JLabel title = new JLabel(name, SwingConstants.CENTER);
-        title.setFont(bigFont);
-        int width = windowWidth;
-        title.setBounds(0, 0, width, componentHeight * 2);
-        this.add(title);
+        createTitle(name, 0.4);
     }
 
-    // Adds text to the panel
-    protected void createLabel(String name, int y) {
-        createLabel(name, windowWidth / 2, y);
+    // Adds a title to the panel
+    protected void createTitle(String name, double windowPercentage) {
+        Font bigFont = new Font("serif", Font.BOLD, 30);
+        String htmlStyle = "<html><div style = 'text-align: center;'>" + name + "</div></html>";
+        JLabel title = new JLabel(htmlStyle, SwingConstants.CENTER);
+        title.setFont(bigFont);
+        int width = (int) (windowWidth * windowPercentage);
+        int y = -componentHeight * 2 / 3;
+        if (name.length() > 40) { //40 is an estimate
+            y = -componentHeight / 4;
+        }
+        title.setBounds((windowWidth - width) / 2, y, width, componentHeight * 3);
+        this.add(title);
     }
 
     // Adds text to the panel
     protected void createLabel(String name, int x, int y) {
         JLabel text = new JLabel(name, SwingConstants.CENTER);
-        int width = windowWidth;
+        int width = componentWidth;
         text.setBounds(x - width / 2, y, width, componentHeight);
         this.add(text);
     }
@@ -146,8 +155,8 @@ public class DefaultPanel extends JPanel {
         drawingArea.setBounds(x, componentHeight * 2, width, height);
         this.add(drawingArea);
         InputData in = new InputData(InputData.NAVIGATION, page);
-        createButton("Clear", in, this.getWidth() / 2 + 320, this.componentHeight * 2 / 3, 50);
-        createButton("Submit", drawingArea, this.getWidth() / 2 + 380, this.componentHeight * 2 / 3, 50);
+        createButton("Clear", in, x + width + 100, getHeight() / 2 - componentHeight / 2, 100);
+        createButton("Add drawing", drawingArea, x + width + 100, getHeight() / 2 + componentHeight / 2, 100);
     }
 
     // Listens for button presses
@@ -182,19 +191,38 @@ public class DefaultPanel extends JPanel {
         }
     }
 
-    // Shows the list of all existing drawings
-    public void showDrawings() {
-        showDrawings(0);
-    }
 
     // Shows the list of all existing drawings
-    public void showDrawings(int x) {
-        double percentDown = 0;
+    public void showDrawings() {
+        double percentDown = 0.05;
         ListArea listArea = new ListArea();
-        int width = getWidth() / 3;
+        int width = (int) (getWidth() * 0.21);
         int height = (int) (getHeight() * (1 - percentDown));
+        int x = getWidth() - width;
         listArea.setBounds(x, (int) (getHeight() * percentDown), width, height);
         this.add(listArea);
         listArea.draw();
+    }
+
+    // Creates a dropdown
+    protected void createDropDown(String name, ArrayList<String> components, int y) {
+        String[] comps = new String[components.size()];
+        for (int i = 0; i < components.size(); i++) {
+            comps[i] = components.get(i);
+        }
+        JComboBox b = new JComboBox<>(comps);
+        b.addActionListener(e -> {
+            JComboBox cb = (JComboBox) e.getSource();
+            String selectedItem = (String) cb.getSelectedItem();
+            userInput = new InputData(InputData.NAME, selectedItem);
+            synchronized (sleeper) {
+                sleeper.notify();
+            }
+        });
+        this.add(b);
+        b.setBounds(windowWidth / 2, y, componentWidth / 2, componentHeight - buttonGap);
+        JLabel text = new JLabel(name, SwingConstants.CENTER);
+        text.setBounds(windowWidth / 2 - componentWidth / 2, y, componentWidth / 2, componentHeight);
+        this.add(text);
     }
 }

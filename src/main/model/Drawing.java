@@ -54,7 +54,7 @@ public class Drawing implements Writable {
             JSONArray row = (JSONArray) json;
             pixels.add(new ArrayList<>());
             for (Object v : row) {
-                Double value = (Double) v;
+                Double value = ((Integer) v).doubleValue();
                 pixels.get(height).add(value);
                 if (height == 0) {
                     this.width++;

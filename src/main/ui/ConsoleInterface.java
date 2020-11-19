@@ -22,15 +22,11 @@ public class ConsoleInterface implements UserInterface {
             return new InputData(InputData.NAVIGATION, StateManager.MENU);
         } else if (command.equals("add")) {
             return new InputData(InputData.NAVIGATION, StateManager.CREATE_NEW);
-        } else if (command.equals("draw")) {
-            return new InputData(InputData.NAVIGATION, StateManager.ADD_TO_EXISTING);
         } else if (command.equals("guess")) {
             return new InputData(InputData.NAVIGATION, StateManager.GUESS);
-        } else if (StateManager.getCurrentState() == StateManager.ADD_TO_EXISTING
-                || StateManager.getCurrentState() == StateManager.CREATE_NEW) {
+        } else if (StateManager.getCurrentState() == StateManager.CREATE_NEW) {
             return new InputData(InputData.NAME, command);
         } else {
-            // TODO: look at why this exists
             return new InputData(InputData.DRAWING, new Drawing(command));
         }
     }
@@ -58,7 +54,8 @@ public class ConsoleInterface implements UserInterface {
     }
 
     // displays the page where users add new drawings to an existing symbol
-    public void teach() {
+    @Override
+    public void teach(String name) {
         System.out.println("\n Add drawings to an existing symbol: \n"
                 + "\t to go back, type \"menu\" \n"
                 + "\t type in a sequence of characters that represent your drawing here:\n");

@@ -1,11 +1,14 @@
 package ui.graphics;
 
 import model.InputData;
+import model.LearnedSymbol;
 import model.ml.Estimator;
 import ui.StateManager;
 import ui.UserInterface;
 
 import javax.swing.*;
+import java.io.File;
+import java.util.ArrayList;
 
 public class GraphicInterface extends JFrame implements UserInterface {
     private final DefaultPanel panel;
@@ -23,57 +26,87 @@ public class GraphicInterface extends JFrame implements UserInterface {
         this.setVisible(true);
         panel = new DefaultPanel(this);
         this.setContentPane(panel);
+
+
     }
 
     // Shows the main menu
     @Override
     public void drawMenu() {
         wipe();
-        panel.createTitle("Menu");
-        panel.createButton("Create a new Drawing", new InputData(InputData.NAVIGATION,
-                StateManager.CREATE_NEW), panel.componentHeight * 2);
-        panel.createButton("Load",
-                new InputData(InputData.NAVIGATION, StateManager.LOAD), panel.componentHeight * 3);
+        panel.createTitle("Create example drawing of objects, and then let the program guess what you draw");
+        panel.createButton("Create a new Object", new InputData(InputData.NAVIGATION,
+                StateManager.CREATE_NEW), panel.componentHeight * 3);
+        drawLoadDropdown(panel.componentHeight * 4);
         if (!Estimator.getLearnedSymbols().isEmpty()) {
-            panel.createButton("Save",
-                    new InputData(InputData.NAVIGATION, StateManager.SAVE), panel.componentHeight * 4);
-            panel.createButton("Add drawings to an existing symbol",
-                    new InputData(InputData.NAVIGATION, StateManager.ADD_TO_EXISTING), panel.componentHeight * 5);
+            panel.createButton("Save objects",
+                    new InputData(InputData.NAVIGATION, StateManager.SAVE), panel.componentHeight * 5);
+            drawAddToExistingDropdown(panel.componentHeight * 6);
             panel.createButton("Guess my drawing",
-                    new InputData(InputData.NAVIGATION, StateManager.GUESS), panel.componentHeight * 6);
-            panel.showDrawings(0);
-            draw();
+                    new InputData(InputData.NAVIGATION, StateManager.GUESS), panel.componentHeight * 7);
         }
+        panel.showDrawings();
+        draw();
     }
 
     // Shows the create new page
     @Override
     public void drawCreateNew() {
         wipe();
-        panel.createTitle("Name of the new drawing");
+        panel.createTitle("Object Name");
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
         panel.createTextField(panel.componentHeight * 2);
     }
 
-    // Prompts user what drawing they want to add to
+    // deprecated
     @Override
     public void drawAddToExisting() {
         wipe();
-        panel.createTitle("Name of the drawing");
+        panel.createTitle("Object Name");
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
-        panel.createTextField(panel.componentHeight * 2);
+        ArrayList<String> objectNames = new ArrayList<>();
+        for (LearnedSymbol ls : Estimator.getLearnedSymbols()) {
+            objectNames.add(ls.getName());
+        }
+        panel.createDropDown("save objects", objectNames, panel.componentHeight * 2);
+    }
+
+    // Prompts user what drawing they want to add to
+    private void drawAddToExistingDropdown(int y) {
+        ArrayList<String> objects = new ArrayList<>();
+        for (LearnedSymbol ls : Estimator.getLearnedSymbols()) {
+            objects.add(ls.getName());
+        }
+        String htmlName = "<html><div style = 'text-align: center;'>add to an existing object</div></html>";
+        panel.createDropDown(htmlName, objects, y);
+    }
+
+    private void drawLoadDropdown(int y) {
+        ArrayList<String> files = new ArrayList<>();
+        File folder = new File(Estimator.SAVE_FOLDER);
+        File[] listOfFiles = folder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                String name = listOfFiles[i].getName();
+                name = name.substring(0, name.length() - 5);
+                files.add(name);
+            }
+        }
+        panel.createDropDown("load objects", files, y);
     }
 
     // Lets the user add drawings
     @Override
-    public void teach() {
+    public void teach(String name) {
         wipe();
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
-        panel.createTitle("Create Reference Drawings");
+        panel.createTitle("Add example drawings of a \"" + name + "\" (click or drag)", 0.6);
         panel.createDrawingArea(StateManager.TEACH);
+        panel.showDrawings();
         draw();
     }
 
@@ -90,7 +123,7 @@ public class GraphicInterface extends JFrame implements UserInterface {
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
         if (guess.equals("")) {
-            panel.createTitle("Draw");
+            panel.createTitle("Draw an object");
         } else {
             panel.createTitle("I guess that is a \"" + guess + "\"");
         }
@@ -102,7 +135,7 @@ public class GraphicInterface extends JFrame implements UserInterface {
     @Override
     public void save() {
         wipe();
-        panel.createTitle("Save name");
+        panel.createTitle("File name to save as");
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
         panel.createTextField(panel.componentHeight * 2);
@@ -112,7 +145,7 @@ public class GraphicInterface extends JFrame implements UserInterface {
     @Override
     public void load() {
         wipe();
-        panel.createTitle("Save name");
+        panel.createTitle("File name to load from");
         panel.createButton("Return to menu", new InputData(InputData.NAVIGATION,
                 StateManager.MENU), 0, 0);
         panel.createTextField(panel.componentHeight * 2);
@@ -123,6 +156,7 @@ public class GraphicInterface extends JFrame implements UserInterface {
     public void invalidInput() {
         wipe();
         panel.createTitle("Invalid Input.");
+        System.out.println("invalid");
     }
 
     // Removes all components
